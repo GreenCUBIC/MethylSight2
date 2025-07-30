@@ -1,5 +1,6 @@
 #FROM nvidia/cuda:12.8.0-base-ubuntu24.04
-FROM nvidia/cuda:12.9.1-base-ubuntu24.04
+#FROM nvidia/cuda:12.9.1-base-ubuntu24.04
+FROM nvidia/cuda:12.9.1-cudnn-runtime-ubuntu24.04 
 
 
 RUN apt-get update

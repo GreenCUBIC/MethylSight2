@@ -31,6 +31,15 @@ touch /path/to/my/results/file.csv
 ```
 
 4. Run MethylSight 2.0
+
+If a GPU is available:
+
+``` sh
+input=<ABSOLUTE_PATH_TO_INPUT_FILE>;output=<ABSOLUTE_PATH_TO_OUTPUT_FILE>;docker run -v "$input:/input.fasta:ro" --mount type=bind,source="$output",target="/output.csv" --gpus 1 methylsight2 "/env/bin/python3 model.py -i /input.fasta -w weights.ckpt -o /output.csv"
+```
+
+If no GPUs are available:
 ``` sh
 input=<ABSOLUTE_PATH_TO_INPUT_FILE>;output=<ABSOLUTE_PATH_TO_OUTPUT_FILE>;docker run -v "$input:/input.fasta:ro" --mount type=bind,source="$output",target="/output.csv" methylsight2 "/env/bin/python3 model.py -i /input.fasta -w weights.ckpt -o /output.csv"
 ```
+
