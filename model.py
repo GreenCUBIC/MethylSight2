@@ -430,9 +430,9 @@ if __name__ == '__main__':
         model.to('cuda')
         
         scores = []
-        logger.info("Embedding the sequences...")
-        site_embeddings = embed_sequences(sequences)
-        logger.info("Making predictions...")
+        logger.info("Embedding the sequences on the GPU...")
+        site_embeddings = embed_sequences(sequences, gpu=True)
+        logger.info("Making predictions on the GPU...")
         
         for protein, sites in tqdm.tqdm(site_embeddings.items()):
             try:
@@ -458,9 +458,9 @@ if __name__ == '__main__':
     else:
 
         scores = []
-        logger.info("Embedding the sequences...")
+        logger.info("Embedding the sequences on the CPU...")
         site_embeddings = embed_sequences(sequences, gpu=False)
-        logger.info("Making predictions...")
+        logger.info("Making predictions on the CPU...")
 
         for protein, sites in tqdm.tqdm(site_embeddings.items()):
             try:
