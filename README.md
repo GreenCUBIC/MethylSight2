@@ -10,13 +10,7 @@
 
 1. Install Docker on your system.
 
-2. Pull our Docker image (it is large, at ~15 GB).
-
-```sh
-docker pull
-```
-
-alternatively, you may build the image
+2. Build our Docker image (it is large, at ~15 GB).
 
 ```sh
 git clone https://github.com/GreenCUBIC/MethylSight2.git
