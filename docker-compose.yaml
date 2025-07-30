@@ -1,0 +1,11 @@
+services:
+  methylsight2:
+    build: .
+    command: nvidia-smi
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
