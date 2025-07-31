@@ -3,3 +3,5 @@ data
 methylsight2.ckpt
 model.py.bak
 test*
+env
+__pycache__

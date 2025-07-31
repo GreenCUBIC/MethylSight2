@@ -1,7 +1,4 @@
-#FROM nvidia/cuda:12.8.0-base-ubuntu24.04
-#FROM nvidia/cuda:12.9.1-base-ubuntu24.04
 FROM nvidia/cuda:12.9.1-cudnn-runtime-ubuntu24.04 
-
 
 RUN apt-get update
 RUN apt-get upgrade -y
@@ -17,8 +14,9 @@ RUN env/bin/pip install -r requirements.txt
 
 RUN mkdir /methylsight2
 WORKDIR /methylsight2
-ADD https://methylsight2.s3.us-east-2.amazonaws.com/weights.ckpt /methylsight2/weights.ckpt
+ADD https://methylsight2.s3.us-east-2.amazonaws.com/weights.ckpt /methylsight2/methylsight2.ckpt
 
 COPY model.py /methylsight2
+COPY server.py /methylsight2
 
 ENTRYPOINT [ "/bin/bash", "-l", "-c" ]

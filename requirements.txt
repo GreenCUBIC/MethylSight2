@@ -12,6 +12,8 @@ jaraco.collections
 jsonpointer
 lightning
 loguru
+fastapi
+uvicorn
 matplotlib
 neptune
 optuna-integration
