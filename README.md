@@ -37,3 +37,8 @@ If no GPUs are available:
 input=<ABSOLUTE_PATH_TO_INPUT_FILE>;output=<ABSOLUTE_PATH_TO_OUTPUT_FILE>;docker run -v "$input:/input.fasta:ro" --mount type=bind,source="$output",target="/output.csv" methylsight2 "/env/bin/python3 model.py -i /input.fasta -w weights.ckpt -o /output.csv"
 ```
 
+## Huggingface
+
+``` sh
+curl -X POST -H "Content-Type: application/json" -d '{"sequence": "SEQUENCE"}' https://fcharih-methylsight2.hf.space/predict
+```
