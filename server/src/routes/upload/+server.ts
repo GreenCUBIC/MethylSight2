@@ -1,8 +1,14 @@
+import fs from "node:fs/promises";
+
 import type { RequestHandler } from "./$types";
 import { text } from "@sveltejs/kit";
 
+import database from "../../lib/methylsight2_predictions_human_score.json";
+
 export const POST: RequestHandler = async ({ request }) => {
   const formData = await request.formData();
+
+  const accessionIds = formData.get("accessionIds") as string;
 
   const sequenceText = formData.get("sequenceText") as string;
   const file = formData.get("file") as File | null;
@@ -10,7 +16,45 @@ export const POST: RequestHandler = async ({ request }) => {
   let sequence = "";
 
   // Use text area input if provided
-  if (sequenceText && sequenceText.trim() !== "") {
+  if (accessionIds !== "") {
+    const ids = accessionIds.split(",").map((x) => x.trim());
+
+    if (ids.length > 100) {
+      return new Response(
+        JSON.stringify({
+          message: `You requested predictions for ${ids.length} proteins. Max is 100.`,
+        }),
+        {
+          status: 400,
+        }
+      );
+    }
+
+    try {
+      let predictions = [];
+      ids.forEach((id) => predictions.push(...database[id]));
+
+      return new Response(
+        JSON.stringify({
+          message: "Predictions successfully retrieved.",
+          predictions,
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    } catch {
+      return new Response(
+        JSON.stringify({
+          message: `Make sure that all the IDs provided are all Swiss-Prot accession IDs for human proteins. At least one could not be found.`,
+        }),
+        {
+          status: 400,
+        }
+      );
+    }
+  } else if (sequenceText && sequenceText.trim() !== "") {
     sequence = sequenceText.trim().replace("\r\n", "\n");
   }
   // Otherwise, try to read the file
@@ -77,7 +121,9 @@ export const POST: RequestHandler = async ({ request }) => {
     JSON.stringify({
       message: "Predictions successfully completed.",
       proteinName: tag,
-      predictions: results,
+      predictions: results.map((r) => {
+        return { ...r, protein: tag };
+      }),
       computeTimeInSeconds,
     }),
     {

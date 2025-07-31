@@ -22,7 +22,8 @@
 
   //let results = null;
   let sequenceText = $state("");
-  let accessionId = $state("");
+  let success = $state(false);
+  let accessionIds = $state("");
   let file = $state(null);
   let isSubmitting = $state(false);
   let message = $state("");
@@ -42,6 +43,7 @@
 
     const formData = new FormData();
     formData.append("sequenceText", sequenceText);
+    formData.append("accessionIds", accessionIds);
     if (file) {
       formData.append("file", file);
     }
@@ -56,6 +58,7 @@
       proteinName = resp.proteinName;
       results = resp.predictions;
       message = resp.message;
+      success = true;
     } catch (error) {
       console.error(error);
       message = "An error occurred while uploading.";
@@ -125,14 +128,14 @@
       {#snippet header()}Sequence submission{/snippet}
       <div>
         <form on:submit|preventDefault={handleSubmit} class="upload-form">
-          <label for="accessionId"
-            >Provide a UniProt accession ID <b
-              >(human proteins in Swiss-Prot only)</b
+          <label for="accessionIds"
+            >Provide UniProt accession IDs <b
+              >(human proteins in Swiss-Prot only; separated by commas)</b
             >:</label
           >
           <textarea
-            id="accessionId"
-            bind:value={accessionId}
+            id="accessionIds"
+            bind:value={accessionIds}
             rows="1"
             placeholder="Q9H7B4"
           ></textarea>
@@ -169,7 +172,7 @@
           </button>
 
           {#if message}
-            <Alert>
+            <Alert color={success ? "green" : "red"}>
               <p class="message">{message}</p>
             </Alert>
           {/if}
@@ -229,6 +232,7 @@
           <table id="results-table">
             <thead>
               <tr>
+                <th>Protein</th>
                 <th>Position</th>
                 <th>MethylSight 2.0 Score</th>
                 <th>Methylated<br />(at 0.75 Precision)</th>
@@ -239,6 +243,7 @@
             <tbody>
               {#each results as r}
                 <tr>
+                  <td>{r.protein}</td>
                   <td>{r.position}</td>
                   <td>{r.score.toFixed(3)}</td>
                   <td

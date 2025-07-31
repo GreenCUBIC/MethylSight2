@@ -22,6 +22,7 @@
 	},
 	"dependencies": {
 		"@bulatdashiev/svelte-slider": "^1.0.3",
+		"@sveltejs/adapter-node": "^5.2.13",
 		"@tailwindcss/vite": "^4.1.11",
 		"flowbite": "^3.1.2",
 		"flowbite-svelte": "^1.10.22",
