@@ -10,6 +10,7 @@
     Checkbox,
     TableSearch,
   } from "flowbite-svelte";
+  import { Button, Modal } from "flowbite-svelte";
   import { Plot, Line, Dot, AxisX, AxisY } from "svelteplot";
   import ms2performance from "../methylsight2_performance_1to36.json";
   import Slider from "@bulatdashiev/svelte-slider";
@@ -31,6 +32,7 @@
   let performanceAtThreshold = $derived(
     ms2performance[`${threshold[0].toFixed(3)}`]
   );
+  let showArchitecture = $state(false);
 
   const handleFileChange = (event) => {
     file = event.target.files[0];
@@ -147,7 +149,7 @@
             id="sequenceText"
             bind:value={sequenceText}
             rows="8"
-            placeholder=">sp|P12345|PROT_HUMAN...\nMSEQNNTEMTFQIQRIYTKDISFEAPNAPHVFQ..."
+            placeholder=">sp|P12345|PROT_HUMAN...&#13MSEQNNTEMTFQIQRIYTKDISFEAPNAPHVFQ..."
           ></textarea>
 
           <label for="file"
@@ -191,7 +193,11 @@
                 y="precision"
               />
               <Dot
-                data={[ms2performance[`${threshold[0].toFixed(3)}`]]}
+                fill="grey"
+                data={[
+                  { ...ms2performance[`${threshold[0].toFixed(3)}`], size: 12 },
+                ]}
+                r={7.5}
                 x="recall"
                 y="precision"
               />
@@ -291,6 +297,38 @@
     >
     or <a on:click={() => downloadPlainTextCitation("txt")}>plain text</a>).
   </p>
+
+  <div id="architecture-div">
+    <img id="architecture" src="/methylsight2-architecture.png" />
+    <a
+      on:click={() => {
+        showArchitecture = true;
+      }}>Click to enlarge</a
+    >
+  </div>
+  <Modal
+    title="The MethylSight 2.0 architecture"
+    form
+    bind:open={showArchitecture}
+    onaction={({ action }) => alert(`Handle "${action}"`)}
+  >
+    <img style="width: 100%;;" src="/methylsight2-architecture.png" />
+    <p>
+      We showed that knowledge of other PTMs (acetylation, ubiquitination, and
+      sumoylation) can inform a lysine methylation predictor and enhance the
+      quality of the predictions. Our model, MethylSight, 2.0 was trained with a
+      multitask training objective to correctly predict whether lysine residues
+      within proteins are methylated, acetylated, ubiquitinated, and/or
+      sumoylated.
+    </p>
+    <p>
+      MethylSight 2.0 extracts embeddings from your protein sequences using the
+      ProtT5 protein language model, and performs inference on a window of 31
+      tokens centered around each lysine in the protein of interest in order to
+      output a score proportional to the probability that the lysine is a
+      methylation site.
+    </p>
+  </Modal>
 
   <p>
     Free predictions of methylation sites within your protein of interest are
@@ -417,5 +455,16 @@
 
   #results-table tbody {
     border-bottom: 1px solid black;
+  }
+
+  #architecture {
+    height: 300px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  #architecture-div {
+    width: 100%;
+    text-align: center;
   }
 </style>
